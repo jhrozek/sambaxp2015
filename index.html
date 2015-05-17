@@ -4,10 +4,10 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>reveal.js - The HTML Presentation Framework</title>
+		<title>Using Samba libraries outside Samba (SambaXP 2015)</title>
 
-		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
-		<meta name="author" content="Hakim El Hattab">
+		<meta name="description" content="Using Samba libraries outside Samba (SambaXP 2015)">
+		<meta name="author" content="Jakub Hrozek">
 
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -36,340 +36,453 @@
 
 	<body>
 
-		<div class="reveal">
+		<div class="reveal" data-transition="none">
 
 			<!-- Any section element inside of this container is displayed as a slide -->
-			<div class="slides">
-				<section>
-					<h1>Reveal.js</h1>
-					<h3>The HTML Presentation Framework</h3>
+			<div class="slides" data-transition="none">
+				<section data-transition="none">
+					<h1>Using Samba libraries outside Samba</h1>
+					<h3>SambaXP 2015</h3>
 					<p>
-						<small>Created by <a href="http://hakim.se">Hakim El Hattab</a> / <a href="http://twitter.com/hakimel">@hakimel</a></small>
+                                        <small><a href="mailto:jhrozek@redhat.com">Jakub Hrozek</a></small>
 					</p>
 				</section>
 
 				<section>
-					<h2>Hello There</h2>
-					<p>
-						reveal.js enables you to create beautiful interactive slide decks using HTML. This presentation will show you examples of what it can do.
-					</p>
-				</section>
-
-				<!-- Example of nested vertical slides -->
-				<section>
-					<section>
-						<h2>Vertical Slides</h2>
-						<p>Slides can be nested inside of each other.</p>
-						<p>Use the <em>Space</em> key to navigate through all slides.</p>
-						<br>
-						<a href="#" class="navigate-down">
-							<img width="178" height="238" data-src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Down arrow">
-						</a>
-					</section>
-					<section>
-						<h2>Basement Level 1</h2>
-						<p>Nested slides are useful for adding additional detail underneath a high level horizontal slide.</p>
-					</section>
-					<section>
-						<h2>Basement Level 2</h2>
-						<p>That's it, time to go back up.</p>
-						<br>
-						<a href="#/2">
-							<img width="178" height="238" data-src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Up arrow" style="-webkit-transform: rotate(180deg);">
-						</a>
-					</section>
+					<h2>About me and the talk</h2>
+					<p>Red Hat developer, working on SSSD full time</p>
+                                        <p>I'm not a Samba developer
+                                            <p>This talk is not about Samba</p>
+                                        </p>
+                                        <aside class="notes">
+                                            Hello, good morning. My name is Jakub Hrozek. I work in the Red Hat identity management team,
+                                            mostly on the SSSD project along with Sumit. Unlike most of you, I'm not a Samba developer. As a
+                                            matter of fact, I've only opened the Samba server code a handful of times. Therefore, this talk
+                                            is not about Samba itself.
+                                        </aside>
 				</section>
 
 				<section>
-					<h2>Slides</h2>
-					<p>
-						Not a coder? Not a problem. There's a fully-featured visual editor for authoring these, try it out at <a href="http://slides.com" target="_blank">http://slides.com</a>.
-					</p>
+                                        <h2>What <b>is</b> the talk about?</h2>
+					<p>This talk is about the libraries Samba provides</p>
+                                        <aside class="notes">
+                                            Then, what is the talk about? It's about the parts of Samba codebase that are used in SSSD -
+                                            the Samba libraries. In particular..
+                                        </aside>
 				</section>
 
 				<section>
-					<h2>Point of View</h2>
-					<p>
-						Press <strong>ESC</strong> to enter the slide overview.
-					</p>
-					<p>
-						Hold down alt and click on any element to zoom in on it using <a href="http://lab.hakim.se/zoom-js">zoom.js</a>. Alt + click anywhere to zoom back out.
-					</p>
+                                        <h2>What <b>is</b> the talk about?</h2>
+					<p>This talk is about...</p>
+                                        <p>...what it is like to maintain Samba libraries from outside Samba</p>
+                                        <p>...what it is like to use Samba libraries in a large project</p>
+                                        <p>...some interesting ways we're using the Samba libraries</p>
+                                        <p>...some ways can extend the Samba libraries</p>
+                                        <aside class="notes">
+                                            It's about maintaining the Samba libraries as independent packages in Fedora and RHEL. It's about our
+                                            experience using the Samba libraries in a large project that is totally independent on Samba. These
+                                            two topics are first part of the presentation, maybe a bit less technical than the rest. Then,
+                                            I'd I'd like to show you an interesting way we've used the Samba libraries that are not present
+                                            in Samba itself, to provide access control using windows group policies. And finally, some ways
+                                            we'd like to extend the LDB with a new back end and make it easier to add new back ends in the future.
+                                        </aside>
 				</section>
 
 				<section>
-					<h2>Touch Optimized</h2>
-					<p>
-						Presentations look great on touch devices, like mobile phones and tablets. Simply swipe through your slides.
-					</p>
-				</section>
-
-				<section data-markdown>
-					<script type="text/template">
-						## Markdown support
-
-						Write content using inline or external Markdown.
-						Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown).
-
-						```
-						<section data-markdown>
-						  ## Markdown support
-
-						  Write content using inline or external Markdown.
-						  Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown).
-						</section>
-						```
-					</script>
+                                        <h2>SSSD</h2>
+                                        <p>System daemon, providing identity information, authentication and access control and for remote accounts</p>
+                                        <p>Supports LDAP, Kerberos, Active Directory and FreeIPA</p>
+                                        <p>Fairly large project, about 220 kSLOC (<tt>sloccount(1)</tt>) </p>
+                                        <aside class="notes">
+                                            To put the talk into context, let me very briefly introduce SSSD. SSSD is a system deamon that,
+                                            with the help of Name Service Switch and PAM modules, provides access to users and groups stored
+                                            remotely, in centralized databases. Currently SSSD supports LDAP for both id and auth, Kerberos
+                                            for authentication.  SSSD also supports FreeIPA and Active Directory a client, to support the
+                                            domain member role. It's a fairly large project, totalling around 220.000 lines of code, the vast
+                                            majority being written in C.
+                                        </aside>
 				</section>
 
 				<section>
-					<section id="fragments">
-						<h2>Fragments</h2>
-						<p>Hit the next arrow...</p>
-						<p class="fragment">... to step through ...</p>
-						<p><span class="fragment">... a</span> <span class="fragment">fragmented</span> <span class="fragment">slide.</span></p>
-
-						<aside class="notes">
-							This slide has fragments which are also stepped through in the notes window.
-						</aside>
-					</section>
-					<section>
-						<h2>Fragment Styles</h2>
-						<p>There's different types of fragments, like:</p>
-						<p class="fragment grow">grow</p>
-						<p class="fragment shrink">shrink</p>
-						<p class="fragment roll-in">roll-in</p>
-						<p class="fragment fade-out">fade-out</p>
-						<p class="fragment current-visible">current-visible</p>
-						<p class="fragment highlight-red">highlight-red</p>
-						<p class="fragment highlight-blue">highlight-blue</p>
-					</section>
-				</section>
-
-				<section id="transitions">
-					<h2>Transition Styles</h2>
-					<p>
-						You can select from different transitions, like: <br>
-						<a href="?transition=none#/transitions">None</a> -
-						<a href="?transition=fade#/transitions">Fade</a> -
-						<a href="?transition=slide#/transitions">Slide</a> -
-						<a href="?transition=convex#/transitions">Convex</a> -
-						<a href="?transition=concave#/transitions">Concave</a> -
-						<a href="?transition=zoom#/transitions">Zoom</a>
-					</p>
-				</section>
-
-				<section id="themes">
-					<h2>Themes</h2>
-					<p>
-						reveal.js comes with a few themes built in: <br>
-						<!-- Hacks to swap themes after the page has loaded. Not flexible and only intended for the reveal.js demo deck. -->
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/black.css'); return false;">Black (default)</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/white.css'); return false;">White</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/league.css'); return false;">League</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/sky.css'); return false;">Sky</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/beige.css'); return false;">Beige</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/simple.css'); return false;">Simple</a> <br>
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/serif.css'); return false;">Serif</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/night.css'); return false;">Night</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/moon.css'); return false;">Moon</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/solarized.css'); return false;">Solarized</a>
-					</p>
+                                        <h2>SSSD and Samba</h2>
+                                        <p>Heavy user of Samba code</p>
+                                        <p>"Standing on the shoulders of Samba"</p>
+                                        <ul>
+                                            <li>talloc</li>
+                                            <li>tevent</li>
+                                            <li>ldb</li>
+                                            <li>tdb</li>
+                                            <li>libndr, libndr-nbt</li>
+                                            <li>libsmbclient</li>
+                                            <li>cwrap: nss_wrapper, uid_wrapper, socket_wrapper</li>
+                                        </ul>
+                                        <aside class="notes">
+                                            Because SSSD was started by Samba developers (Simo and Sumit), it was a heavy users of libraries
+                                            originating in Samba for a long time. We use talloc, tevent, ldb and tdb in mostly predictable ways.
+                                            Starting with the 1.12 version, we're also using the ndr and the libsmbclient libraries to fetch
+                                            and use GPOs to provide access control. And we also started using most of the libraries that are
+                                            now also available separately under the cwrap.org umbrella to provide better unit tests. Because the
+                                            cwrap libraries originate at Samba and made their way back to the Samba tree, they are worth mentioning.
+                                        </aside>
 				</section>
 
 				<section>
-					<section data-background="#dddddd">
-						<h2>Slide Backgrounds</h2>
-						<p>
-							Set <code>data-background="#dddddd"</code> on a slide to change the background color. All CSS color formats are supported.
-						</p>
-						<a href="#" class="navigate-down">
-							<img width="178" height="238" data-src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Down arrow">
-						</a>
-					</section>
-					<section data-background="https://s3.amazonaws.com/hakim-static/reveal-js/image-placeholder.png">
-						<h2>Image Backgrounds</h2>
-						<pre><code>&lt;section data-background="image.png"&gt;</code></pre>
-					</section>
-					<section data-background="https://s3.amazonaws.com/hakim-static/reveal-js/image-placeholder.png" data-background-repeat="repeat" data-background-size="100px">
-						<h2>Tiled Backgrounds</h2>
-						<pre><code style="word-wrap: break-word;">&lt;section data-background="image.png" data-background-repeat="repeat" data-background-size="100px"&gt;</code></pre>
-					</section>
-					<section data-background-video="https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.mp4,https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.webm" data-background-color="#000000">
-						<div style="background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px;">
-							<h2>Video Backgrounds</h2>
-							<pre><code style="word-wrap: break-word;">&lt;section data-background-video="video.mp4,video.webm"&gt;</code></pre>
-						</div>
-					</section>
-				</section>
-
-				<section data-transition="slide" data-background="#4d7e65" data-background-transition="zoom">
-					<h2>Background Transitions</h2>
-					<p>
-						Different background transitions are available via the backgroundTransition option. This one's called "zoom".
-					</p>
-					<pre><code>Reveal.configure({ backgroundTransition: 'zoom' })</code></pre>
-				</section>
-
-				<section data-transition="slide" data-background="#b5533c" data-background-transition="zoom">
-					<h2>Background Transitions</h2>
-					<p>
-						You can override background transitions per-slide.
-					</p>
-					<pre><code style="word-wrap: break-word;">&lt;section data-background-transition="zoom"&gt;</code></pre>
+					<h2>Samba libraries in Fedora/RHEL</h2>
+                                        <p>In Fedora/RHEL, the separate libraries have been maintained by the SSSD maintainer, not the Samba maintainer</p>
+                                        <p>Historical development. Let's blame Simo!</p>
+                                        <p>For the most part, it's been a smooth ride, but..</p>
+                                        <aside class="notes">
+                                            Funnily, even though I'm not a Samba developer, I'm the person who maintains the Samba libraries
+                                            in Fedora and RHEL. This is for historical reasons, because Simo used to be both Samba maintainer
+                                            and SSSD maintainer in RHEL and even after he moved on, the Samba libraries were always maintained
+                                            by whoever owned SSSD at that time. It may not sound like the most logical solution, often I get
+                                            pinged by Samba developers to include a fix or build a new package to fix some of their problems
+                                            that I don't understand, but at least I can give you an insight on what it is like to maintain the
+                                            libraries without any Samba knowledge. For the most part, it has been easy, but there are things
+                                            that can be improved.
+                                        </aside>
 				</section>
 
 				<section>
-					<h2>Pretty Code</h2>
-					<pre><code data-trim contenteditable>
-function linkify( selector ) {
-  if( supports3DTransforms ) {
-
-    var nodes = document.querySelectorAll( selector );
-
-    for( var i = 0, len = nodes.length; i &lt; len; i++ ) {
-      var node = nodes[i];
-
-      if( !node.className ) {
-        node.className += ' roll';
-      }
-    }
-  }
-}
-					</code></pre>
-					<p>Code syntax highlighting courtesy of <a href="http://softwaremaniacs.org/soft/highlight/en/description/">highlight.js</a>.</p>
+					<h2>Maintaining Samba libraries</h2>
+                                        <p>As a maintainer, I care about changes</p>
+                                        <p>Is this package version safe for a stable Fedora?</p>
+                                        <p>Is it a bugfix-only release or are there new features?</p>
+                                        <aside class="notes">
+                                            As a maintainer in Fedora and RHEL, I care about changes between the last releases. I need to
+                                            decide if a new version can only be included in the Fedora development version or also in the stable
+                                            versions. Or if there are any changes that should be cherry-picked and backported even to a RHEL release.
+                                            Currently Samba doesn't make it easy.
+                                        </aside>
 				</section>
 
 				<section>
-					<h2>Marvelous List</h2>
-					<ul>
-						<li>No order here</li>
-						<li>Or here</li>
-						<li>Or here</li>
-						<li>Or here</li>
-					</ul>
+					<h2>Using Samba libraries</h2>
+                                        <p>The first SSSD developers were also Samba developers<p>
+                                        <p>More developers are hired to work on the SSSD</p>
+                                        <p>Documentation becomes important in getting them up to speed</p>
+                                        <p>Result - tevent and talloc tutorials</p>
+                                        <aside class="notes">
+                                            Documentation and tracking changes is also the only comment about how the Samba libraries are used
+                                            that I have. Even though SSSD is an external consumer, we didn't have many issues in the beginning
+                                            with the lack of documentation. Several developers already had experience with Samba and the others
+                                            started about the same time, so we learned stuff that was crucial but not documented anywhere. But
+                                            the SSSD team grows and changes and we had to teach new developers who had no prior experience
+                                            with Samba. To make that easier and not repeat ourselves, developers from our team submitted or
+                                            tutored documentation for talloc and tevent in a tutorial form. But as more functionality is added
+                                            to the libraries, we need to make sure the tutorials reflect the current best practices and are
+                                            up to date.
+                                        </aside>
 				</section>
 
 				<section>
-					<h2>Fantastic Ordered List</h2>
-					<ol>
-						<li>One is smaller than...</li>
-						<li>Two is smaller than...</li>
-						<li>Three!</li>
-					</ol>
+					<h2>Example - a new libtalloc release</h2>
+                                        <p><a href="https://talloc.samba.org/">https://tevent.samba.org/</a> points straight to Doxygen docs</p>
+                                        <p>NEWS file has latest entry from 2007..</p>
+                                        <p>Running <tt>git log</tt> requires knowing where to look in the Samba tree</p>
+                                        <p><code>diff -Naur</code> is not ideal..</p>
+                                        <!-- <p>Not all changes in the public API made it back to the documentation</p> -->
+                                        <aside class="notes">
+                                            If we take a look at talloc, the homepage takes us straight to Doxygen documentation. There
+                                            are no release notes or changelog. In the tarball, there is a NEWS file, but the last record is
+                                            from 2007. It's actually required to look into the git history to find out what changed, but
+                                            even that it not as easy as it could be, because you need to know where the libraries are in the
+                                            first place. Ideally, navigating to the talloc/tevent homepage should list all the information
+                                            that developers and maintainers need.
+                                        </aside>
 				</section>
 
 				<section>
-					<h2>Tabular Tables</h2>
+					<h2>Example - cwrap.org libraries</h2>
+                                        <p>The cwrap libraries were split from Samba and are merged back</p>
+                                        <p>Very easy for an outsider to consume</p>
+                                        <p>Separate homepage with news and documentation</p>
+                                        <p>Development history can be easily viewed in a separate tree</p>
+                                        <p>Several tutorials around the web</p>
+                                        <aside class="notes">
+                                            After we checked out talloc, we can compare that with another piece of code originating from Samba
+                                            as well, the cwrap.org libraries. Even though the cwrap libraries live in a separate git tree now,
+                                            they've been merged back to Samba..I guess that's how Samba rolls.. In comparison with talloc and
+                                            tevent, the cwrap libraries are much easier for an outside consumer like SSSD to use. The cwrap.org
+                                            site has a NEWS section and each tarball has a changelog file that lists what has changed since
+                                            last time.  If that is not descriptive enough, it's easy to view the change history for every
+                                            wrapper separately.  For beginners, there is a lwn.net article and other tutorials on the Internet.
+                                            For me, cwrap is a role model in how the Samba libraries should be. The difference is not in the
+                                            code, it's how the code is presented and maintained.
+                                        </aside>
+				</section>
+
+				<section>
+					<h1>The Samba libraries rock</h1>
+                                        <p>The libraries Samba produces are already great</p>
+                                        <p>With a little more polish, they could be awesome</p>
+                                        <p>Let's discuss how we can work together</p>
+                                        <aside class="notes">
+                                            I've been ranting about Samba libraries for a couple of slides now. I really don't want it to look
+                                            like I'm not happy with the libraries -- I am. SSSD wouldn't be possible without the libraries
+                                            that we consume and both talloc and tevent are libraries that more projects should be using. I
+                                            just think that with just a little more effort on polish and paying attention to how the code is
+                                            consumed and distributed, the libraries could be used by many more projects. Especially talloc
+                                            could be used more, memory management is something every C project struggles with. I have a couple
+                                            of suggestions and wishes that I'd like to present and discuss. Maybe not all of them are realistic
+                                            or would be welcome by Samba, but let's take a look.
+                                        </aside>
+				</section>
+
+				<section>
+					<h2>We could do better!</h2>
+                                        <p>What's new in a release</p>
+                                        <p>git-shortlog or a digest to samba-technical is perfectly fine</p>
+                                        <p>Keep the documentation up-to-date</p>
+                                        <aside class="notes">
+                                            The biggest help for us would be to know what are the changes when a new release comes out. We
+                                            don't need a detailed list describing every commit, but a several bullet points listing the fixes
+                                            or new API calls would be nice.  Maybe this is something we could help with -- send an e-mail to the
+                                            samba-technical list a day before the release and we can craft a simple changelog file and check if
+                                            any of the changes should be reflected in the documentation of the libraries. I know this work is
+                                            not required for the core Samba server, you know your libraries well, so I realize this is a part
+                                            where we need to help. Feel free to find me after the talk to discuss how, or just write me an e-mail.
+                                        </aside>
+				</section>
+
+				<section>
+					<h2>We could do even better!</h2>
+                                        <p>Make it easier to track the individual changes</p>
+                                        <p>Decouple libraries from the core Samba tree</p>
+                                        <p>Make it clear which interfaces are stable</p>
+                                            <p>Do we need to rebuild the libldb memberof plugin with each ldb release?</p>
+                                        <p>Let the world know about your libraries!</p>
+                                        <aside class="notes">
+                                            If I can ask for even more, the best for us would be to be able to see all the changes. I understand
+                                            it's not required in Samba to send all patches to the mailing list for review and it probably
+                                            makes sense given the volume of changes in Samba. But from time to time, there are discussions
+                                            on samba-technical about starting using a code-review tool like Gerrit. Maybe enabling external
+                                            consumers to track changes and participate in changes to the libraries could be another point for
+                                            adding the code review tool. From my point of view, and I guess and don't know the historical reasons
+                                            but for us, it would be best if there was a separate git tree with the libraries or git submodule.
+                                            I understand that it's a bit sensitive topic, but it would definitely help make the tools better
+                                            consumable for outsiders and maybe even attract more developers and users. Last but not least,
+                                            advertise your work! The libraries are great, more people should know about them.
+                                        </aside>
+				</section>
+
+				<section>
+					<h1>Access control using Group Policy Objects</h1>
+				</section>
+
+				<section>
+					<h1>Extending LDB with an MDB back end</h1>
+                                        <aside class="notes">
+                                            In the last part of the presentation, I'd like to show you my hobby project, which is a new
+                                            back end for the LDB database that uses the LMDB key-value database as the underlying storage.
+                                            While most of the LDB operations are there, not all functionality required by Samba and provided
+                                            by the TDB back end was implemented, so the LMDB back end is still a bit of work in progress.
+                                        </aside>
+				</section>
+
+				<section>
+					<h2>Motivation for a new LDB back end</h2>
+                                        <p>A very frequent complaint about SSSD is "it's slow"</p>
+                                        <p>SSSD uses its cache heavily due to its architecture</p>
+                                        <p>In some cases (saving large groups), the cache was taking a lot of time</p>
+                                        <aside class="notes">
+                                            Why did I start all this work? One complaint we're getting a lot from our users is that SSSD is
+                                            slow. When we started looking into the performance results, we found out that writing entries to the
+                                            database was sometimes the reason for the slowness. Even though some use-cases could be improved
+                                            by refactoring SSSD code, for instance to perform fewer cache writes, the database performance
+                                            was still not optimal. Around that time, I heard the idea of using LMDB as an underlying store
+                                            for LDB. It seemed like it could help our problem, but also seemed like a fun project to hack on!
+                                        </aside>
+				</section>
+
+				<section>
+					<h2>LMDB 101</h2>
+                                        <p>LMDB is the rock star of key-value stores</p>
+                                        <p>Written by Howard Chu (Symas/OpenLDAP)</p>
+                                        <p>The API usage resembles Berkeley DB</p>
+                                        <p>See any of Howard Chu's presentations to learn more (FOSDEM, LDAPCon, ...)</p>
+                                        <aside class="notes">
+                                            At the same time, LMDB was being introduced on many conferences, blogs and elsewhere. LMDB was
+                                            written for OpenLDAP by Howard Chu and he made a really good job making sure that the developer
+                                            community was aware of his work. The advantages of LMDB are performance (L stands for Lightning),
+                                            while retaining ACID semantics and compact codebase. API-wise, LMDB is close to Berkeley DB.
+                                            Given that the main driver for starting the work was performance, it's prudent to take a look
+                                            at some benchmarks to see if it makes sense to implement the LMDB back end.
+                                        </aside>
+				</section>
+
+				<section>
+					<h2>LMDB benchmarks</h2>
+                                        <p>Benchmarks comparing different DB engines are available at <a href="http://symas.com/mdb/">LMDB homepage</a></p>
+                                        <p>Pretty graphs!</p>
+                                        <p>LMDB wins pretty much all the time</p>
+                                        <aside class="notes">
+                                            The LMDB homepage lists several benchmarks for different workloads, comparing databases like BDB,
+                                            LevelDB etc. Most of the results are visualized into nice graphs, but at present, TDB is not
+                                            included there directly.  However, Howard Chu extended the LevelDB's db_bench benchmark tool with
+                                            additional database engines, including TDB.
+                                        </aside>
+				</section>
+
+				<section>
+					<h2>LevelDB's db_bench</h2>
+                                        <p><a href="https://github.com/hyc/leveldb/tree/benches">https://github.com/hyc/leveldb/tree/benches</a></p>
 					<table>
 						<thead>
 							<tr>
-								<th>Item</th>
-								<th>Value</th>
-								<th>Quantity</th>
+								<th>Test</th>
+								<th>LMDB op/s</th>
+								<th>TDB op/s</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr>
-								<td>Apples</td>
-								<td>$1</td>
-								<td>7</td>
+								<td>fillrandbatch</td>
+								<td>774503</td>
+								<td>189630</td>
 							<tr>
 							<tr>
-								<td>Lemonade</td>
-								<td>$2</td>
-								<td>18</td>
-							<tr>
-							<tr>
-								<td>Bread</td>
-								<td>$3</td>
-								<td>2</td>
+								<td>fillseqsync</td>
+								<td>129</td>
+								<td>41</td>
 							<tr>
 						</tbody>
 					</table>
+                                        <p>These are the results where TDB comes the closest..</p>
+                                        <aside class="notes">
+                                            I compiled the db_bench tool and ran the test on my laptop. It's important to run the tests with
+                                            a non-default TESTDIR to make sure the tests run on a real disk partition and not /tmp which is
+                                            a tmpfs on modern Linux distributions. In all tests, MDB was much faster, the two tests I chose
+                                            are those where TDB was the closes to MDB in terms of performance. However, these benchmarks were
+                                            created by the author of LMDB, maybe it makes sense to take a look at some by Samba team..
+                                        </aside>
 				</section>
 
 				<section>
-					<h2>Clever Quotes</h2>
-					<p>
-						These guys come in two forms, inline: <q cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-						&ldquo;The nice thing about standards is that there are so many to choose from&rdquo;</q> and block:
-					</p>
-					<blockquote cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-						&ldquo;For years there has been a theory that millions of monkeys typing at random on millions of typewriters would
-						reproduce the entire works of Shakespeare. The Internet has proven this theory to be untrue.&rdquo;
-					</blockquote>
+					<h2>Database benchmarks - tdbench</h2>
+                                        <p>Attend Ralf Boehme's "tbench, a db microbenchmark, or tdb vs all the rest"</p>
+                                        <p>Today, 12:15 PM - 13:00 PM Track 1</p>
 				</section>
 
 				<section>
-					<h2>Intergalactic Interconnections</h2>
-					<p>
-						You can link between slides internally,
-						<a href="#/2/3">like this</a>.
-					</p>
+					<h2>Database benchmarks - tdbench</h2>
+                                        <pre>
+<code style="font-size:smaller;" class="bash">
+./bin/tbench -d lmdb -t 10
+Testing with 10 processes, loading 10000 rec each, txn_size: 10
+starting bench: load
+10 processes created 100000 records in 0.296 seconds (337820 rec/s)
+</code>
+                                        </pre>
+                                        <pre>
+<code style="font-size:smaller;" class="bash">
+./bin/tbench -d tdb -t 10
+Testing with 10 processes, loading 10000 rec each, txn_size: 10
+starting bench: load
+10 processes created 100000 records in 165.263 seconds (605 rec/s)
+</code>
+                                        </pre>
 				</section>
 
 				<section>
-					<h2>Speaker View</h2>
-					<p>There's a <a href="https://github.com/hakimel/reveal.js#speaker-notes">speaker view</a>. It includes a timer, preview of the upcoming slide as well as your speaker notes.</p>
-					<p>Press the <em>S</em> key to try it out.</p>
-
-					<aside class="notes">
-						Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
-					</aside>
+					<h2>The implementation of ldb_mdb</h2>
+                                        <p>Both TDB and LMDB are key-value stores</p>
+                                        <p>Much of the work started as s/tdb/mdb/</p>
+                                        <p>But lot of the code could be shared</p>
+                                        <aside class="notes">
+                                            Because both TDB and LMDB are key-value stores, the API is a bit similar. When I started the work,
+                                            I mostly copied code, refactored it as I went a bit, but it was apparent there is a lot of code
+                                            duplication between the tdb and lmdb back ends. Also, while there is an SQLite and LDAP back end
+                                            in the ldb source, too, realistically only TDB is being used. As a result, the TDB back end implements
+                                            lot of logic that any new back end needs to implement to be usable, but that is not strictly tied
+                                            to TDB.
+                                        </aside>
 				</section>
 
 				<section>
-					<h2>Export to PDF</h2>
-					<p>Presentations can be <a href="https://github.com/hakimel/reveal.js#pdf-export">exported to PDF</a>, here's an example:</p>
-					<iframe src="//www.slideshare.net/slideshow/embed_code/42840540" width="445" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:3px solid #666; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe>
+					<h2>Exntensible code</h2>
+                                        <p>Databases are not one-size fits all</p>
+                                        <p>LMDB seems nice, but some environments might prefer FooDB or BarDB</p>
+                                        <p>RocksDB anyone?</p>
+                                        <aside class="notes">
+                                            While the preliminary testing results seem to indicate that LMDB is nice and could bring us great speed
+                                            benefits, some environments might prefer a different database, maybe the workload would be different.
+                                            Pretty much by accident I stumbled upon RocksDB when working on the LMDB back end. </aside>
 				</section>
 
 				<section>
-					<h2>Global State</h2>
-					<p>
-						Set <code>data-state="something"</code> on a slide and <code>"something"</code>
-						will be added as a class to the document element when the slide is open. This lets you
-						apply broader style changes, like switching the page background.
-					</p>
-				</section>
-
-				<section data-state="customevent">
-					<h2>State Events</h2>
-					<p>
-						Additionally custom events can be triggered on a per slide basis by binding to the <code>data-state</code> name.
-					</p>
-					<pre><code class="javascript" data-trim contenteditable style="font-size: 18px;">
-Reveal.addEventListener( 'customevent', function() {
-	console.log( '"customevent" has fired' );
-} );
-					</code></pre>
+					<h2>Shared code</h2>
+                                        <p>Goal: Create the ldb_mdb back end on top of generic keyval utilities</p>
+                                        <p>Secondary goal: Reuse generic LDB functions in the modules. Some module functions were created later than the tdb backend</p>
+                                        <p>Shared code could be used also the tdb back end</p>
+                                        <aside class="notes">
+                                            For all these reasons it makes sense to try to split the code that doesn't strictly require TDB
+                                            into its own module and make it usable not only by the TDB back end, but any key-value store.
+                                            Additionally, there are private functions in the TDB back end that perform exactly the same function
+                                            as public LDB functions that were just added later (ldb_msg_add, ldb_msg_remove_element). Perhaps
+                                            some could be substituted for the common LDB functions and make the code smaller.
+                                        </aside>
 				</section>
 
 				<section>
-					<h2>Take a Moment</h2>
-					<p>
-						Press B or . on your keyboard to pause the presentation. This is helpful when you're on stage and want to take distracting slides off the screen.
-					</p>
+					<h2>ldb_keyval</h2>
+                                        <p>Contains the generic logic currently in the TDB back end</p>
+                                        <ul>
+                                            <li>Common key-value logic</li>
+                                            <li>Tevent wrappers</li>
+                                            <li>Attribute filtering</li>
+                                            <li>..and more</li>
+                                        </ul>
 				</section>
 
 				<section>
-					<h2>Much more</h2>
-					<ul>
-						<li>Right-to-left support</li>
-						<li><a href="https://github.com/hakimel/reveal.js#api">Extensive JavaScript API</a></li>
-						<li><a href="https://github.com/hakimel/reveal.js#auto-sliding">Auto-progression</a></li>
-						<li><a href="https://github.com/hakimel/reveal.js#parallax-background">Parallax backgrounds</a></li>
-						<li><a href="https://github.com/hakimel/reveal.js#keyboard-bindings">Custom keyboard bindings</a></li>
-					</ul>
+					<h2>ldb_keyval code reuse</h2>
+                                        <p>TODO - run wc -l and show how much code could be reused</p>
+                                        <p>Show how much code is mdb specific</p>
 				</section>
 
-				<section style="text-align: left;">
-					<h1>THE END</h1>
-					<p>
-						- <a href="http://slides.com">Try the online editor</a> <br>
-						- <a href="https://github.com/hakimel/reveal.js">Source code &amp; documentation</a>
-					</p>
+				<section>
+					<h2>ldb_keyval and ldb_mdb status</h2>
+                                        <p style="text-align: left">Implemented & tested
+                                        <ul style="text-align: left">
+                                            <li>Tevent-based back end initialization from tdb</li>
+                                            <li>Common key-value operations</li>
+                                            <li>LDB operations (add, del, modify, replace, search)</li>
+                                        </ul>
+                                        </p>
+                                        <p style="text-align: left">In progress
+                                        <ul style="text-align: left">
+                                            <li>Indexing</li>
+                                            <li>Special attributes (case sensitiveness, seqnum, ..)</li>
+                                            <li>Permissive control</li>
+                                        </ul>
+                                        </p>
+				</section>
+
+				<section>
+					<h2>Testing ldb_keyval and ldb_mdb</h2>
+                                        <p>The generic code must be tested to be useful</p>
+                                        <p>New code must be compatible with the TDB back end<p>
+                                        <p>API tests, not tool tests</p>
+                                        <p>Samba, meet cmocka</p>
+				</section>
+
+				<section>
+					<h2>LDB module benchmarks</h2>
+                                        <p>TODO - include benchmark from an LDB program</p>
+				</section>
+
+                                <!--
+				<section>
+					<h2>Show me the code!</h2>
+                                        <p></p>
+				</section>
+                                -->
+
+				<section>
+					<h1>That's all!</h1>
+					<h2>Questions?</h2>
+					<h2>Add link to the presentation and contact details</h2>
 				</section>
 
 			</div>
@@ -389,7 +502,7 @@ Reveal.addEventListener( 'customevent', function() {
 				history: true,
 				center: true,
 
-				transition: 'slide', // none/fade/slide/convex/concave/zoom
+				transition: 'none', // none/fade/slide/convex/concave/zoom
 
 				// Optional reveal.js plugins
 				dependencies: [
