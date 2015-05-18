@@ -15,7 +15,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
 
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+		<link rel="stylesheet" href="css/theme/white.css" id="theme">
 
 		<!-- Code syntax highlighting -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -77,7 +77,7 @@
                                         <p>...what it is like to maintain Samba libraries from outside Samba</p>
                                         <p>...what it is like to use Samba libraries in a large project</p>
                                         <p>...some interesting ways we're using the Samba libraries</p>
-                                        <p>...some ways can extend the Samba libraries</p>
+                                        <p>...some ways we can extend the Samba libraries</p>
                                         <aside class="notes">
                                             It's about maintaining the Samba libraries as independent packages in Fedora and RHEL. It's about our
                                             experience using the Samba libraries in a large project that is totally independent on Samba. These
@@ -158,9 +158,9 @@
 
 				<section>
 					<h2>Using Samba libraries</h2>
-                                        <p>The first SSSD developers were also Samba developers<p>
+                                        <p>SSSD was started by Simo<p>
                                         <p>More developers are hired to work on the SSSD</p>
-                                        <p>Documentation becomes important in getting them up to speed</p>
+                                        <p>Documentation is important in getting them up to speed</p>
                                         <p>Result - tevent and talloc tutorials</p>
                                         <aside class="notes">
                                             Documentation and tracking changes is also the only comment about how the Samba libraries are used
@@ -177,9 +177,9 @@
 
 				<section>
 					<h2>Example - a new libtalloc release</h2>
-                                        <p><a href="https://talloc.samba.org/">https://tevent.samba.org/</a> points straight to Doxygen docs</p>
-                                        <p>NEWS file has latest entry from 2007..</p>
-                                        <p>Running <tt>git log</tt> requires knowing where to look in the Samba tree</p>
+                                        <p><a href="https://talloc.samba.org/">https://talloc.samba.org/</a> points straight to Doxygen docs</p>
+                                        <p>NEWS file has the latest entry from 2007..</p>
+                                        <p><tt>git log</tt> requires knowing where to look in the Samba tree</p>
                                         <p><code>diff -Naur</code> is not ideal..</p>
                                         <!-- <p>Not all changes in the public API made it back to the documentation</p> -->
                                         <aside class="notes">
@@ -194,10 +194,10 @@
 
 				<section>
 					<h2>Example - cwrap.org libraries</h2>
-                                        <p>The cwrap libraries were split from Samba and are merged back</p>
+                                        <p>The libraries were split from Samba and are merged back</p>
                                         <p>Very easy for an outsider to consume</p>
                                         <p>Separate homepage with news and documentation</p>
-                                        <p>Development history can be easily viewed in a separate tree</p>
+                                        <p>Development history can be viewed in a separate tree</p>
                                         <p>Several tutorials around the web</p>
                                         <aside class="notes">
                                             After we checked out talloc, we can compare that with another piece of code originating from Samba
@@ -205,10 +205,13 @@
                                             they've been merged back to Samba..I guess that's how Samba rolls.. In comparison with talloc and
                                             tevent, the cwrap libraries are much easier for an outside consumer like SSSD to use. The cwrap.org
                                             site has a NEWS section and each tarball has a changelog file that lists what has changed since
-                                            last time.  If that is not descriptive enough, it's easy to view the change history for every
-                                            wrapper separately.  For beginners, there is a lwn.net article and other tutorials on the Internet.
-                                            For me, cwrap is a role model in how the Samba libraries should be. The difference is not in the
-                                            code, it's how the code is presented and maintained.
+                                            last time. If that is not descriptive enough, it's easy to view the change history for every
+                                            wrapper separately. For beginners, there is a lwn.net article and other tutorials on the Internet.
+                                            I'm a bit biased here, because I've been working on the cwrap project with Andreas, mostly on the resolv_wrapper, but
+                                            I looked at the code and the libraries even before, maybe 2 years ago. But until the project was
+                                            more separate, the libraries were just too hard to use. For me, cwrap is a role model in how the
+                                            Samba libraries should be. The difference is not in the code, it's how the code is presented and
+                                            maintained. 
                                         </aside>
 				</section>
 
@@ -268,6 +271,141 @@
 
 				<section>
 					<h1>Access control using Group Policy Objects</h1>
+                                        <aside class="notes">
+                                            In the second part of the talk, let's take a look at one new feature of SSSD 1.12 that we implemented
+                                            using a samba library that we didn't use before.
+                                        </aside>
+				</section>
+
+				<section>
+					<h2>Access control with SSSD </h2>
+                                        <p>SSSD has several options for access control</p>
+                                        <ul>
+                                            <li>Allow everything</li>
+                                            <li>Allow users that match a filter</li>
+                                            <li>Allow users present in an ACL</li>
+                                            <li><b>Use Active Directory GPOs</b></li>
+                                        </ul>
+                                        <aside class="notes">
+                                            We already have a few ways to control access control in SSSD. The easiest access control is just to
+                                            allow everything :-). It's possible to configure an LDAP-like filter that allows users who match
+                                            the filter. Or it's possible to set a list of usernames or groupnames that are allowed. But all
+                                            these methods are client-side only, in enterprise environment you normally want to define the access
+                                            control policies at one place. And if SSSD is acting as a Windows domain member, it's most natural
+                                            to use the GPOs for access control, just like you would with a Windows client machine.  This is
+                                            a feature we added to sssd 1.12 and we used a samba library, libsmbclient to accomplish this feature.
+                                        </aside>
+				</section>
+
+				<section>
+					<h2>Using GPOs for access control</h2>
+                                        <p>Group Policy can only be used for access control with SSSD</p>
+                                        <p>The rest is not SSSD's domain</p>
+                                        <p>But the code is a bit extensible (Sudo?)</p>
+                                        <aside class="notes">
+                                            In Windows, Group policies can be used to manage pretty much anything in a Windows domain, ranging from access
+                                            to network shares to a desktop background. SSSD's system interface is NSS and PAM module, therefore
+                                            we limit the functionality to access control only. Some functinality that could in theory be used
+                                            by SSSD can be added later, maybe Sudo would be a good candidate.
+                                        </aside>
+				</section>
+
+				<section>
+					<h2>Configuring GPO for access control (In Windows)</h2>
+                                        <p>Create-and-link the GPO in the "Group Policy Management Console"</p>
+                                        <p>Configure "User Rights assignments" in the "Group Policy Management Editor"</p>
+                                        <p>This is all Windows-specific terminology</p>
+                                        <aside class="notes">
+                                            In Windows, configuring the GPO based access control is two-step process. You'd first create and link the GPO
+                                            to the OU or domain it applies to and then configure the user rights assignments in another UI. The key point
+                                            is that this is all windows terminology that doesn't apply on Linux machines SSSD runs.
+                                        </aside>
+				</section>
+
+				<section>
+					<h2>LogonRights to PAM services translation</h2>
+                                        <p>Windows uses LogonRights for access control</p>
+                                        <p>Linux uses PAM services</p>
+                                        <p>SSSD has default mappings and allows custom mappings in configuration</p>
+                                        <aside class="notes">
+                                            So the linux client SSSD runs at needs to do translation from the Windows-style aceess control that
+                                            is done using LogonRights to the Linux-style access control that is done using PAM services. To
+                                            do that, SSSD has several default mappings of Windows LogonRights and allows the configuration to
+                                            be changed and overriden. The default mappins are supposed to be useful for most environments --
+                                            for example the RemoteInteractiveLogonRight maps onto SSH and InteractiveLogonRight maps onto services
+                                            like GDM or KDM. There's more mappins, all are listed in the sssd-ad man page. With this mapping, 
+                                            the logon rights configured earlier on the server are translated into client-side access control
+                                            rules. This is how the GPO access control feature works from user perspective, let's take a look how they
+                                            are coded up.
+                                        </aside>
+				</section>
+
+				<section>
+					<h2>Under the hood</h2>
+                                        <p>Three-step processing</p>
+                                        <ul>
+                                            <li>LDAP processing determines what GPOs are applicable</li>
+                                            <li>SMB processing fetches the INI GPO policy files</li>
+                                            <li>Enforcement parses the INI GPO policy files and does the policy decision</li>
+                                        </ul>
+                                        <aside class="notes">
+                                        </aside>
+				</section>
+
+				<section>
+					<h2>GPO: LDAP processing</h2>
+                                        <ul>
+                                            <li>Determines which GPOs are applicable to the target computer account</li>
+                                            <ul>
+                                                <li>Linked to this OU, enabled, enforced</li>
+                                            </ul>
+                                            <li>Retrieves relevant attributes of applicable GPOs</li>
+                                            <ul>
+                                                <li>File-system paths for example</li>
+                                            </ul>
+                                            <li>Checks if the GPO needs to be fetched from the AD/SMB server</li>
+                                            <ul>
+                                                <li>Timeout prevents going to SMB too often</li>
+                                            </ul>
+                                        </ul>
+                                        <aside class="notes">
+                                        </aside>
+				</section>
+
+				<section>
+					<h2>GPO: SMB processing</h2>
+                                        <p>Fetch the GPO file using libsmbclient</p>
+                                        <p>smbc_getFunctionOpen(), smbc_getFunctionRead(), ..</p>
+                                        <p>Stores on disk in INI format</p>
+                                        <p>Metadata about the INI file in LDB cache</p>
+                                        <aside class="notes">
+                                        </aside>
+				</section>
+
+				<section>
+					<h2>GPO: INI file example</h2>
+                                        <pre>
+<code style="font-size:smaller;" class="bash">
+[Unicode]
+Unicode=yes
+[Version]
+signature="$CHICAGO$"
+Revision=1
+[Privilege Rights]
+SeRemoteInteractiveLogonRight = tuser,administrator
+</code>
+                                        </pre>
+                                        <aside class="notes">
+                                        </aside>
+				</section>
+
+				<section>
+					<h2>GPO: Policy enforcement</h2>
+                                        <p>Parses the INI files stored previously in GPO cache</p>
+                                        <p>Extracts the records correspinging to the Logon Right mapped to the PAM service name</p>
+                                        <p>Allows or denies access</p>
+                                        <aside class="notes">
+                                        </aside>
 				</section>
 
 				<section>
@@ -281,7 +419,7 @@
 				</section>
 
 				<section>
-					<h2>Motivation for a new LDB back end</h2>
+					<h2>Why do the work?</h2>
                                         <p>A very frequent complaint about SSSD is "it's slow"</p>
                                         <p>SSSD uses its cache heavily due to its architecture</p>
                                         <p>In some cases (saving large groups), the cache was taking a lot of time</p>
@@ -313,7 +451,7 @@
 
 				<section>
 					<h2>LMDB benchmarks</h2>
-                                        <p>Benchmarks comparing different DB engines are available at <a href="http://symas.com/mdb/">LMDB homepage</a></p>
+                                        <p>Benchmarks comparing different DB engines are available at <a href="http://symas.com/mdb/">http://symas.com/mdb/</a></p>
                                         <p>Pretty graphs!</p>
                                         <p>LMDB wins pretty much all the time</p>
                                         <aside class="notes">
@@ -340,12 +478,12 @@
 								<td>fillrandbatch</td>
 								<td>774503</td>
 								<td>189630</td>
-							<tr>
+							</tr>
 							<tr>
 								<td>fillseqsync</td>
 								<td>129</td>
 								<td>41</td>
-							<tr>
+							</tr>
 						</tbody>
 					</table>
                                         <p>These are the results where TDB comes the closest..</p>
@@ -360,8 +498,8 @@
 
 				<section>
 					<h2>Database benchmarks - tdbench</h2>
-                                        <p>Attend Ralf Boehme's "tbench, a db microbenchmark, or tdb vs all the rest"</p>
-                                        <p>Today, 12:15 PM - 13:00 PM Track 1</p>
+                                        <p><del>Attend Ralf Boehme's "tbench, a db microbenchmark, or tdb vs all the rest"</del></p>
+                                        <p><del>Today, 12:15 PM - 13:00 PM Track 1</del></p>
 				</section>
 
 				<section>
@@ -400,9 +538,10 @@ starting bench: load
 				</section>
 
 				<section>
-					<h2>Exntensible code</h2>
+					<h2>Extensible code</h2>
                                         <p>Databases are not one-size fits all</p>
-                                        <p>LMDB seems nice, but some environments might prefer FooDB or BarDB</p>
+                                        <p>LMDB seems nice for server-side read environments, but some environments might prefer FooDB or BarDB</p>
+                                        <p>LevelDB anyone?</p>
                                         <p>RocksDB anyone?</p>
                                         <aside class="notes">
                                             While the preliminary testing results seem to indicate that LMDB is nice and could bring us great speed
@@ -413,7 +552,7 @@ starting bench: load
 				<section>
 					<h2>Shared code</h2>
                                         <p>Goal: Create the ldb_mdb back end on top of generic keyval utilities</p>
-                                        <p>Secondary goal: Reuse generic LDB functions in the modules. Some module functions were created later than the tdb backend</p>
+                                        <p>Secondary goal: Reuse generic LDB functions in the modules. Some LDB functions were created later than the tdb backend</p>
                                         <p>Shared code could be used also the tdb back end</p>
                                         <aside class="notes">
                                             For all these reasons it makes sense to try to split the code that doesn't strictly require TDB
@@ -425,29 +564,32 @@ starting bench: load
 				</section>
 
 				<section>
-					<h2>ldb_keyval</h2>
+					<h2>ldb_mod_*.c</h2>
                                         <p>Contains the generic logic currently in the TDB back end</p>
                                         <ul>
-                                            <li>Common key-value logic</li>
+                                            <li>Common module logic</li>
                                             <li>Tevent wrappers</li>
                                             <li>Attribute filtering</li>
                                             <li>..and more</li>
                                         </ul>
+                                        <p>Already more common code than mdb-specific code</p>
+                                        <aside class="notes">
+                                            My work in progess splits several generic modules out of the TDB back end into the common directory. For
+                                            example, any new back end would probably use tevent in the same manner as TDB uses to establish requests
+                                            with timeouts and error handling. All search requests need a way to filter only the requested attributes
+                                            for example or all modify operations need the same common logic to create a resulting ldb_message after a mod.
+                                            I split all these into modules and wrote unit tests for these in the process. The module interface might not be
+                                            ideal and I need your help reviewing them!
+                                        </aside>
 				</section>
 
 				<section>
-					<h2>ldb_keyval code reuse</h2>
-                                        <p>TODO - run wc -l and show how much code could be reused</p>
-                                        <p>Show how much code is mdb specific</p>
-				</section>
-
-				<section>
-					<h2>ldb_keyval and ldb_mdb status</h2>
+					<h2>ldb_mod_* and ldb_mdb status</h2>
                                         <p style="text-align: left">Implemented & tested
                                         <ul style="text-align: left">
                                             <li>Tevent-based back end initialization from tdb</li>
-                                            <li>Common key-value operations</li>
-                                            <li>LDB operations (add, del, modify, replace, search)</li>
+                                            <li>LDB operations (add, del, modify, replace, search) using mdb</li>
+                                            <li>Common logic was split from the operations</li>
                                         </ul>
                                         </p>
                                         <p style="text-align: left">In progress
@@ -460,7 +602,7 @@ starting bench: load
 				</section>
 
 				<section>
-					<h2>Testing ldb_keyval and ldb_mdb</h2>
+					<h2>Testing ldb_mod_* and ldb_mdb</h2>
                                         <p>The generic code must be tested to be useful</p>
                                         <p>New code must be compatible with the TDB back end<p>
                                         <p>API tests, not tool tests</p>
@@ -469,20 +611,43 @@ starting bench: load
 
 				<section>
 					<h2>LDB module benchmarks</h2>
-                                        <p>TODO - include benchmark from an LDB program</p>
+                                        <p>We need benchmars for different workloads</p>
+                                        <p>SSSD is single-writer</p>
+                                        <p>In my tests the LMDB back end was about twice as fast</p>
 				</section>
 
                                 <!--
 				<section>
-					<h2>Show me the code!</h2>
-                                        <p></p>
+					<h2>ldb_add(); ldb_delete() example</h2>
+					<table>
+						<thead>
+							<tr>
+								<th>Entries</th>
+								<th>LMDB backend</th>
+								<th>TDB backend</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>300</td>
+								<td>6.59</td>
+								<td>13.35</td>
+							</tr>
+						</tbody>
+					</table>
 				</section>
-                                -->
+                                --!>
+
+				<section>
+					<h2>Show me the code!</h2>
+                                        <p>It's a work in progress</p>
+                                        <p><a href="https://github.com/jhrozek/samba-ldb-mdb/tree/mdb">https://github.com/jhrozek/samba-ldb-mdb/tree/mdb</a></p>
+				</section>
 
 				<section>
 					<h1>That's all!</h1>
 					<h2>Questions?</h2>
-					<h2>Add link to the presentation and contact details</h2>
+                                        <p><a href="https://github.com/jhrozek/sambaxp2015">https://github.com/jhrozek/sambaxp2015</a></p>
 				</section>
 
 			</div>
