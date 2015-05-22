@@ -153,6 +153,7 @@
                                             decide if a new version can only be included in the Fedora development version or also in the stable
                                             versions. Or if there are any changes that should be cherry-picked and backported even to a RHEL release.
                                             Currently Samba doesn't make it easy.
+                                            <br>Couple of slides later, I'll actually come up with suggestions</br>
                                         </aside>
 				</section>
 
@@ -379,6 +380,11 @@
                                         <p>Stores on disk in INI format</p>
                                         <p>Metadata about the INI file in LDB cache</p>
                                         <aside class="notes">
+                                            The SMB processing is done in a separate child process to work around the synchronous nature
+                                            of libsmbclient. The child receives the smb path of the GPO file to download from the parent
+                                            long-lived SSSD process, uses libsmbclient calls to store the file and passes back the filename
+                                            path to the parent process which saves the path and some additional metadata in the SSSD LDB cache.
+                                            On the next slide, I have an example of how the INI GPO policy file looks like.
                                         </aside>
 				</section>
 
@@ -435,7 +441,7 @@ SeRemoteInteractiveLogonRight = tuser,administrator
 
 				<section>
 					<h2>LMDB 101</h2>
-                                        <p>LMDB is the rock star of key-value stores</p>
+                                        <p>LMDB is a very fast, compact key-value store</p>
                                         <p>Written by Howard Chu (Symas/OpenLDAP)</p>
                                         <p>The API usage resembles Berkeley DB</p>
                                         <p>See any of Howard Chu's presentations to learn more (FOSDEM, LDAPCon, ...)</p>
@@ -551,7 +557,7 @@ starting bench: load
 
 				<section>
 					<h2>Shared code</h2>
-                                        <p>Goal: Create the ldb_mdb back end on top of generic keyval utilities</p>
+                                        <p>Goal: Create the ldb_mdb back end on top of generic modules</p>
                                         <p>Secondary goal: Reuse generic LDB functions in the modules. Some LDB functions were created later than the tdb backend</p>
                                         <p>Shared code could be used also the tdb back end</p>
                                         <aside class="notes">
@@ -572,7 +578,7 @@ starting bench: load
                                             <li>Attribute filtering</li>
                                             <li>..and more</li>
                                         </ul>
-                                        <p>Already more common code than mdb-specific code</p>
+                                        <p>Already there is more common code than mdb-specific code</p>
                                         <aside class="notes">
                                             My work in progess splits several generic modules out of the TDB back end into the common directory. For
                                             example, any new back end would probably use tevent in the same manner as TDB uses to establish requests
@@ -588,7 +594,7 @@ starting bench: load
                                         <p style="text-align: left">Implemented & tested
                                         <ul style="text-align: left">
                                             <li>Tevent-based back end initialization from tdb</li>
-                                            <li>LDB operations (add, del, modify, replace, search) using mdb</li>
+                                            <li>LDB operations (add, del, modify, search) using mdb</li>
                                             <li>Common logic was split from the operations</li>
                                         </ul>
                                         </p>
